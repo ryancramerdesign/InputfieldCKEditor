@@ -1,0 +1,77 @@
+/**
+ * Styles for the container (inline only)
+ *
+ */
+
+.InputfieldForm .InputfieldCKEditorInline {
+	padding: 15px; 
+	border: 1px dashed #ccc; 
+}
+
+.InputfieldForm .InputfieldCKEditorInline *:first-child {
+	/* lets the padding above take precedence */
+	margin-top: 0;
+}
+
+.InputfieldForm .InputfieldCKEditorInline *:last-child {
+	/* lets the padding above take precedence */
+	margin-bottom: 0;
+}
+
+.InputfieldForm div.cke_focus {
+	border-color: #fff; 
+}
+
+/**
+ * General editor styles (inline only)
+ *
+ */
+
+.InputfieldForm .InputfieldCKEditorInline {
+	font-size: 1.1em; 
+	color: #333; 
+	background: #fff; 
+}
+
+.InputfieldForm .InputfieldCKEditorInline em {
+	font-style: italic; 
+}
+.InputfieldForm .InputfieldCKEditorInline strong {
+	font-weight: bold; 
+}
+.InputfieldForm .InputfieldCKEditorInline ul li {
+	list-style: disc;
+	display: list-item; 
+	margin: 0 0 0 2em;
+}
+.InputfieldForm .InputfieldCKEditorInline ol li {
+	list-style: decimal;
+	display: list-item; 
+	margin: 0 0 0 2em;
+}
+.InputfieldForm .InputfieldCKEditorInline blockquote {
+	padding-left: 1em;
+	border-left: 3px solid #ccc; 
+}
+
+.InputfieldForm .InputfieldCKEditorInline h1,
+.InputfieldForm .InputfieldCKEditorInline h2,
+.InputfieldForm .InputfieldCKEditorInline h3,
+.InputfieldForm .InputfieldCKEditorInline h4,
+.InputfieldForm .InputfieldCKEditorInline h5 {
+	color: #333; 
+	font-family: Arial, sans-serif;
+}
+
+.InputfieldForm .InputfieldCKEditorInline h1 {
+	font-size: 2.0em;
+}
+.InputfieldForm .InputfieldCKEditorInline h2 {
+	font-size: 1.7em;
+}
+.InputfieldForm .InputfieldCKEditorInline h3 {
+	font-size: 1.4em; 
+}
+.InputfieldForm .InputfieldCKEditorInline h4 {
+	font-size: 1.2em;
+}

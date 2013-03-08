@@ -1,0 +1,223 @@
+<?php
+
+/**
+ * ProcessWire Inputfield for CKEditor, rich text HTML editor
+ *
+ * This is currently a work in progress, not yet ready for production use. 
+ *
+ * ProcessWire module copyright 2013 by Ryan Cramer
+ *
+ */
+
+class InputfieldCKEditor extends InputfieldTextarea {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'CKEditor',
+			'version' => 1,
+			'summary' => 'CKEditor textarea rich text editor (alpha)',
+			);
+	}
+
+	/**
+	 * Placeholder that appears as the value instead of blank
+	 *
+	 */
+	const PLACEHOLDER_MARKUP = '<p>&nbsp;</p>';
+
+	/**
+	 * Placeholder that appears as the value in the hidden input used by inline mode
+	 *
+	 */
+	const PLACEHOLDER_TEXT = ':IGNORE:';
+
+	/**
+	 * Instance of MarkupHTMLPurifier module
+	 *
+	 */
+	static $purifier = null;
+
+	/**
+	 * Names of JS config keys to avoid redundancy
+ 	 *
+	 */
+	static $configNames = array();
+
+	/**
+	 * Name of current JS config key
+	 *
+	 */
+	protected $configName = '';
+
+	/**
+	 * Construct and set default configuration
+	 *
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		$this->set('inlineMode', 0); 
+
+		$this->set('toolbar', '' . 
+			"Format, Bold, Italic, -, RemoveFormat\n" . 
+			"NumberedList, BulletedList, -, Blockquote\n" . 
+			"PWLink, Unlink, Anchor\n" . 
+			"Image, Table, HorizontalRule, SpecialChar\n" . 
+			"PasteText, PasteFromWord\n" . 
+			"Scayt, -, Source"
+			); 
+
+		$this->set('extraPlugins', 'pwlink'); 
+	}
+
+	/**
+	 * Given a toolbar config string, convert it to an array
+	 *
+	 * Toolbar items split by commas
+	 * Groups of toolbar items split by lines
+	 *
+	 */
+	protected function toolbarStringToArray($str) {
+		$str = str_replace(' ', '', $str); 
+		$items = array();
+		$lines = explode("\n", $str); 
+		foreach($lines as $line) {
+			$lineArray = explode(',', trim($line)); 
+			$items[] = $lineArray; 
+		}
+		return $items;
+	}
+
+	/**
+	 * Render the output code for CKEditor
+	 *
+	 */
+	public function ___render() {
+
+		$url = $this->config->urls->InputfieldCKEditor . "ckeditor/ckeditor.js";
+		$this->config->scripts->add($url); 
+
+		$config = array(
+			'extraPlugins' => 'pwlink', 
+			'toolbar' => $this->toolbarStringToArray($this->toolbar)
+			);
+
+		// optimization to remember the name of our JS config entry to prevent redundancy in multi-lang fields
+		if(!$this->configName) $this->configName = $this->className() . '_' . $this->name; 
+
+		// optimization to prevent redundant configuration code when used in a repeater
+		if(strpos($this->configName, '_repeater')) $this->configName = preg_replace('/_repeater\d+/', '', $this->configName); 
+		if(!in_array($this->configName, self::$configNames)) $this->config->js($this->configName, $config); 
+		self::$configNames[] = $this->configName; 
+
+		return $this->inlineMode ? $this->renderInline() : $this->renderNormal();
+	}
+
+	/**
+	 * Render the output code for CKEditor Normal Mode
+	 *
+	 */
+	protected function renderNormal() {
+		$out = parent::___render() . "<script>CKEDITOR.replace('$this->name', config.$this->configName);</script>";
+		return $out; 
+	}
+
+	/**
+	 * Render the output code for CKEditor Inline Mode
+	 *
+	 */
+	protected function renderInline() {
+
+		if(!wire('modules')->get('MarkupHTMLPurifier')) {
+			$this->error($this->_('CKEditor inline mode requires the MarkupHTMLPurifier module. Using normal mode instead.')); 
+			return $this->renderNormal();
+		}
+
+		$placeholder = self::PLACEHOLDER_MARKUP;
+		$value = $this->attr('value'); 
+		if(!strlen($value)) $value = $placeholder;
+
+		$out = 	"<div id='{$this->id}_ckeditor' class='InputfieldCKEditorInline' contenteditable='true' data-configName='$this->configName'>$value</div>" . 
+			"<input type='hidden' name='$this->name' id='$this->id' value='" . self::PLACEHOLDER_TEXT . "' />";
+
+		return $out; 
+	}
+
+	/**
+	 * Process data submitted to a CKEditor field
+	 *
+	 * When inline mode is used, the content is run through HTML Purifier
+	 *
+	 */
+	public function ___processInput(WireInputData $input) {
+
+		$value = $input[$this->name]; 
+
+		if($this->inlineMode && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
+			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier'); 
+			$value = self::$purifier->purify($value); 		
+		}
+
+		if($value != $this->attr('value')) {
+			$this->trackChange('value');
+			$this->setAttribute('value', $value); 	
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Set an Inputfield attribute
+	 *
+	 * We are capturing the 'value' attribute to detect when it should be ignored.
+	 *
+	 */
+	public function setAttribute($key, $value) {
+		if($key == 'value') {
+			$value = trim($value);
+			if($value == self::PLACEHOLDER_MARKUP) $value = '';
+			if($value == self::PLACEHOLDER_TEXT) return $this; // ignore value
+		}
+		return parent::setAttribute($key, $value); 	
+	}
+
+	/*
+	 * Inputfield configuration screen
+	 *
+	 */
+	public function ___getConfigInputfields() {
+
+		$inputfields = parent::___getConfigInputfields();
+
+		$f = $inputfields->get('stripTags');
+		if($f) $inputfields->remove($f);
+
+		$f = $inputfields->get('placeholder');
+		if($f) $inputfields->remove($f);
+
+		$wrapper = wire('modules')->get('InputfieldFieldset'); 
+		$wrapper->label = $this->_('CKEditor Settings'); 
+
+		$f = wire('modules')->get('InputfieldTextarea'); 
+		$f->attr('name', 'toolblar'); 
+		$f->attr('value', $this->toolbar);
+		$f->label = $this->_('CKEditor Toolbar'); 
+		$f->description = $this->_('Separate each toolbar item with a comma. Group items by placing them on the same line. If you want more than one toolbar row, separate them with a blank line. Use a hyphen "-" where you want a small separator to appear within a group.'); 
+		$wrapper->add($f); 
+
+		$f = wire('modules')->get('InputfieldCheckbox'); 
+		$f->attr('name', 'inlineMode'); 
+		$f->attr('value', 1); 
+		$f->attr('checked', $this->inlineMode ? 'checked' : ''); 
+		$f->label = $this->_('Inline Mode?');
+		$f->description = $this->_('When inline mode is enabled, the editor will not be loaded until you click in the text. This is more faster and more efficient when there are numerous CKEditor fields on the page.'); 
+		$f->notes = $this->_('This mode requires that the HTML Purifier module is installed (MarkupHTMLPurifier).'); 
+		if(wire('modules')->isInstalled('MarkupHTMLPurifier')) $f->notes = $this->_('The HTML Purifier module is installed.'); 
+			else $f->notes .= "\n" . $this->_('WARNING: it is not currently installed. You should install it before enabling inline mode.'); 
+		$wrapper->add($f); 
+
+		$inputfields->add($wrapper); 
+
+		return $inputfields; 
+	}
+}
