@@ -6,6 +6,7 @@
 .InputfieldForm .InputfieldCKEditorInline {
 	padding: 15px; 
 	border: 1px dashed #ccc; 
+	overflow: hidden;
 }
 
 .InputfieldForm .InputfieldCKEditorInline *:first-child {
