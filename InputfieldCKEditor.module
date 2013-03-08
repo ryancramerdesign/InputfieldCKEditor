@@ -62,12 +62,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			"Format, Bold, Italic, -, RemoveFormat\n" . 
 			"NumberedList, BulletedList, -, Blockquote\n" . 
 			"PWLink, Unlink, Anchor\n" . 
-			"Image, Table, HorizontalRule, SpecialChar\n" . 
+			"PWImage, Table, HorizontalRule, SpecialChar\n" . 
 			"PasteText, PasteFromWord\n" . 
 			"Scayt, -, Source"
 			); 
 
-		$this->set('extraPlugins', 'pwlink'); 
+		$this->set('extraPlugins', 'pwlink,pwimage'); 
 	}
 
 	/**
@@ -98,7 +98,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$this->config->scripts->add($url); 
 
 		$config = array(
-			'extraPlugins' => 'pwlink', 
+			'extraPlugins' => 'pwlink,pwimage',
 			'toolbar' => $this->toolbarStringToArray($this->toolbar)
 			);
 
@@ -199,7 +199,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$wrapper->label = $this->_('CKEditor Settings'); 
 
 		$f = wire('modules')->get('InputfieldTextarea'); 
-		$f->attr('name', 'toolblar'); 
+		$f->attr('name', 'toolbar'); 
 		$f->attr('value', $this->toolbar);
 		$f->label = $this->_('CKEditor Toolbar'); 
 		$f->description = $this->_('Separate each toolbar item with a comma. Group items by placing them on the same line. If you want more than one toolbar row, separate them with a blank line. Use a hyphen "-" where you want a small separator to appear within a group.'); 
