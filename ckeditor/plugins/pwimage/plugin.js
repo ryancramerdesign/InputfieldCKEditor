@@ -5,10 +5,6 @@ CKEDITOR.plugins.add('pwimage', {
 
 			exec: function(editor) {
 
-				// Do we need something like this with CKeditor?
-				// if (ed.dom.getAttrib(ed.selection.getNode(), 'class').indexOf('mceItem') != -1)
-				// return;
-
 				var page_id = $("#Inputfield_id").val(); 
 				var file = '';
 				var imgClass = '';
@@ -61,7 +57,7 @@ CKEDITOR.plugins.add('pwimage', {
 				// create iframe dialog box
 				$iframe = $('<iframe id="pwimage_iframe" width="100%" frameborder="0" src="' + modalUri + queryString + '"></iframe>'); 
 				$iframe.dialog({
-					title: "Select Image", //config.InputfieldTinyMCE.pwimage.selectLabel, // "Select Image", 
+					title: config.InputfieldCKEditor.pwimage.selectLabel, // "Select Image", 
 					height: windowHeight,
 					width: windowWidth,
 					position: [100, 80], 
@@ -82,7 +78,7 @@ CKEDITOR.plugins.add('pwimage', {
 
 						$iframe.dialog("option", "buttons", [
 							{ 
-								text: "Insert This Image", //config.InputfieldTinyMCE.pwimage.insertBtn, // "Insert This Image",
+								text: config.InputfieldCKEditor.pwimage.insertBtn, // "Insert This Image",
 								click:  function() {
 
 									function insertImage(src) {
@@ -104,8 +100,6 @@ CKEDITOR.plugins.add('pwimage', {
 										html += 'alt="' + alt + '" />';
 										if(link && link.length > 0) html = "<a href='" + link + "'>" + html + "</a>";
 										if(nodeParent && $nodeParent.is("a")) se.select(nodeParent); // add it to the selection 
-										//se.select(nodeParent); // add it to the selection 
-										//tinyMCE.execCommand('mceInsertContent', false, html);
 										editor.insertHtml(html); 
 										$iframe.dialog("close"); 
 									}
@@ -113,7 +107,7 @@ CKEDITOR.plugins.add('pwimage', {
 									var $i = $iframe.contents();
 									var $img = $("#selected_image", $i); 
 
-									$iframe.dialog("disable").dialog("option", "title", "Saving Image"); // config.InputfieldTinyMCE.pwimage.savingNote
+									$iframe.dialog("disable").dialog("option", "title", config.InputfieldCKEditor.pwimage.savingNote); // Saving Image
 									$img.removeClass("resized"); 
 
 									var cls = $img.attr('class'); 
@@ -134,7 +128,7 @@ CKEDITOR.plugins.add('pwimage', {
 								}
 							}, {
 
-								text: "Select Another Image", // config.InputfieldTinyMCE.pwimage.selectBtn, // "Select Another Image", 
+								text: config.InputfieldCKEditor.pwimage.selectBtn, // "Select Another Image", 
 								click: function() {
 									var $i = $iframe.contents();
 									var page_id = $("#page_id", $i).val();
@@ -142,16 +136,16 @@ CKEDITOR.plugins.add('pwimage', {
 									$iframe.dialog("option", "buttons", {}); 
 								}
 							}, {
-								text: "Cancel", // config.InputfieldTinyMCE.pwimage.cancelBtn, // "Cancel",
+								text: config.InputfieldCKEditor.pwimage.cancelBtn, // "Cancel",
 								click: function() { $iframe.dialog("close"); }
 							}
-						]).dialog("option", "title", "Edit Image").width(windowWidth).height(windowHeight); // config.InputfieldTinyMCE.pwimage.editLabel // "Edit Image"
+						]).dialog("option", "title", config.InputfieldCKEditor.pwimage.editLabel).width(windowWidth).height(windowHeight); // "Edit Image"
 
 
 					} else {
 						$iframe.dialog("option", "buttons", [
 							{
-								text: "Cancel", // text: config.InputfieldTinyMCE.pwimage.cancelBtn, // "Cancel", 
+								text: config.InputfieldCKEditor.pwimage.cancelBtn, // "Cancel", 
 								click: function() { $iframe.dialog("close"); }
 							}
 						]).width(windowWidth).height(windowHeight);

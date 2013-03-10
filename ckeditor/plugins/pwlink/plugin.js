@@ -34,8 +34,8 @@ CKEDITOR.plugins.add('pwlink', {
 				var windowHeight = $(window).height()-300;
 				if(windowHeight > 800) windowHeight = 800;
 
-				var insertLinkLabel = 'Insert Link'; // config.InputfieldTinyMCE.pwlink.label;
-				var cancelLabel = 'Cancel'; // config.InputfieldTinyMCE.pwlink.cancel;
+				var insertLinkLabel = config.InputfieldCKEditor.pwlink.label;
+				var cancelLabel = config.InputfieldCKEditor.pwlink.cancel;
 
                                 $iframe.dialog({
                                         title: insertLinkLabel,

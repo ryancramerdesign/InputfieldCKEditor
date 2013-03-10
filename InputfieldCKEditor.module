@@ -45,6 +45,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	protected $configName = '';
 
 	/**
+	 * Whether or not the globalConfig has run. This ensures it only runs once per request.
+	 *
+	 */
+	static protected $isConfigured = false;
+
+	/**
 	 * Construct and set default configuration
 	 *
 	 */
@@ -89,8 +95,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 */
 	public function ___render() {
 
-		$url = $this->config->urls->InputfieldCKEditor . "ckeditor/ckeditor.js";
-		$this->config->scripts->add($url); 
+		$this->globalConfig();
 
 		$config = array(
 			'extraPlugins' => 'pwlink,pwimage',
@@ -106,6 +111,41 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		self::$configNames[] = $this->configName; 
 
 		return $this->inlineMode ? $this->renderInline() : $this->renderNormal();
+	}
+
+	/**
+	 * Setup configuration specific to all instances rendered on the same page
+	 *
+	 * Primarily for language translation purposes
+	 *
+	 */
+	protected function globalConfig() {
+			
+		if(self::$isConfigured) return;
+
+		$this->config->scripts->add($this->config->urls->InputfieldCKEditor . "ckeditor/ckeditor.js"); 
+
+		$cancelButtonLabel = $this->_('Cancel'); // Cancel button label
+
+		$config = array(
+			'language' => $this->_('en'), // 2 character language code, lowercase
+			'pwlink' => array(
+				'label' => $this->_('Insert Link'), // Insert link label, window headline and button text
+				'cancel' => $cancelButtonLabel
+				),
+			'pwimage' => array(
+				'selectLabel' => $this->_('Select Image'),
+				'editLabel' => $this->_('Edit Image'),
+				'savingNote' => $this->_('Saving Image'),
+				'cancelBtn' => $cancelButtonLabel,
+				'insertBtn' => $this->_('Insert This Image'),
+				'selectBtn' => $this->_('Select Another Image')
+				),
+			);
+
+		$this->config->js($this->className(), $config); 
+
+		self::$isConfigured = true; 
 	}
 
 	/**
