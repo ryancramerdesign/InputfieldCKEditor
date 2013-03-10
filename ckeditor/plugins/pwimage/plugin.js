@@ -19,12 +19,11 @@ CKEDITOR.plugins.add('pwimage', {
 				var selection = editor.getSelection();
 				var se = selection.getSelectedElement();
 				var node = selection.getStartElement();
+				var $node = $(node);
 				var nodeParent = node.getParent();
 				var $nodeParent = $(nodeParent);
-				
-
-				$node = $(node);
 				var src = $node.attr('src'); 
+
 				if(src) { 
 					var parts = src.split('/'); 
 					file = parts.pop();
@@ -37,6 +36,7 @@ CKEDITOR.plugins.add('pwimage', {
 					parts = parts.reverse();
 					page_id = 0; 
 
+					// pull page_id out of img[src]
 					for(n = 0; n < parts.length; n++) {
 						page_id = parseInt(parts[n]); 
 						if(page_id > 0) break;
@@ -58,10 +58,8 @@ CKEDITOR.plugins.add('pwimage', {
 				if(imgLink && imgLink.length) queryString += "&link=" + escape(imgLink);
 				queryString += "&winwidth=" + windowWidth; 
 
+				// create iframe dialog box
 				$iframe = $('<iframe id="pwimage_iframe" width="100%" frameborder="0" src="' + modalUri + queryString + '"></iframe>'); 
-
-				var selectImageLabel = 
-
 				$iframe.dialog({
 					title: "Select Image", //config.InputfieldTinyMCE.pwimage.selectLabel, // "Select Image", 
 					height: windowHeight,
@@ -76,9 +74,11 @@ CKEDITOR.plugins.add('pwimage', {
 
 				$iframe.load(function() {
 
+					// when iframe loads, pull the contents into $i 
 					var $i = $iframe.contents();
 
 					if($i.find("#selected_image").size() > 0) {
+						// if there is a #selected_image element on the page...
 
 						$iframe.dialog("option", "buttons", [
 							{ 
@@ -95,7 +95,7 @@ CKEDITOR.plugins.add('pwimage', {
 										var alt = $("#selected_image_description", $i).val();
 										var cls = $img.removeClass('ui-resizable').attr('class'); 
 										var link = $("#selected_image_link:checked", $i).val();
-										var html = '<img class="' + cls + '" src="' + src + '" mce_src="' + src + '" '; 
+										var html = '<img class="' + cls + '" src="' + src + '" '; 
 
 										if(alt && alt.length > 0) alt = $("<div />").text(alt).html().replace(/"/g, '&quot;'); 
 
@@ -134,7 +134,7 @@ CKEDITOR.plugins.add('pwimage', {
 								}
 							}, {
 
-								text: config.InputfieldTinyMCE.pwimage.selectBtn, // "Select Another Image", 
+								text: "Select Another Image", // config.InputfieldTinyMCE.pwimage.selectBtn, // "Select Another Image", 
 								click: function() {
 									var $i = $iframe.contents();
 									var page_id = $("#page_id", $i).val();
@@ -142,16 +142,16 @@ CKEDITOR.plugins.add('pwimage', {
 									$iframe.dialog("option", "buttons", {}); 
 								}
 							}, {
-								text: config.InputfieldTinyMCE.pwimage.cancelBtn, // "Cancel",
+								text: "Cancel", // config.InputfieldTinyMCE.pwimage.cancelBtn, // "Cancel",
 								click: function() { $iframe.dialog("close"); }
 							}
-						]).dialog("option", "title", config.InputfieldTinyMCE.pwimage.editLabel).width(windowWidth).height(windowHeight); // "Edit Image"
+						]).dialog("option", "title", "Edit Image").width(windowWidth).height(windowHeight); // config.InputfieldTinyMCE.pwimage.editLabel // "Edit Image"
 
 
 					} else {
 						$iframe.dialog("option", "buttons", [
 							{
-								text: config.InputfieldTinyMCE.pwimage.cancelBtn, // "Cancel", 
+								text: "Cancel", // text: config.InputfieldTinyMCE.pwimage.cancelBtn, // "Cancel", 
 								click: function() { $iframe.dialog("close"); }
 							}
 						]).width(windowWidth).height(windowHeight);

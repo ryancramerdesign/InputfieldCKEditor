@@ -5,7 +5,8 @@
  *
  * This is currently a work in progress, not yet ready for production use. 
  *
- * ProcessWire module copyright 2013 by Ryan Cramer
+ * ProcessWire module by Ryan Cramer
+ * with contributions by Antti Peisa
  *
  */
 
@@ -14,16 +15,10 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 1,
+			'version' => 2,
 			'summary' => 'CKEditor textarea rich text editor (alpha)',
 			);
 	}
-
-	/**
-	 * Placeholder that appears as the value instead of blank
-	 *
-	 */
-	const PLACEHOLDER_MARKUP = '<p>&nbsp;</p>';
 
 	/**
 	 * Placeholder that appears as the value in the hidden input used by inline mode
@@ -133,9 +128,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			return $this->renderNormal();
 		}
 
-		$placeholder = self::PLACEHOLDER_MARKUP;
 		$value = $this->attr('value'); 
-		if(!strlen($value)) $value = $placeholder;
 
 		$out = 	"<div id='{$this->id}_ckeditor' class='InputfieldCKEditorInline' contenteditable='true' data-configName='$this->configName'>$value</div>" . 
 			"<input type='hidden' name='$this->name' id='$this->id' value='" . self::PLACEHOLDER_TEXT . "' />";
@@ -151,7 +144,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 */
 	public function ___processInput(WireInputData $input) {
 
-		$value = $input[$this->name]; 
+		$value = trim($input[$this->name]); 
+		if($value == self::PLACEHOLDER_TEXT) return $this; // ignore value
 
 		if($this->inlineMode && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
 			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier'); 
@@ -164,21 +158,6 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		}
 
 		return $this;
-	}
-
-	/**
-	 * Set an Inputfield attribute
-	 *
-	 * We are capturing the 'value' attribute to detect when it should be ignored.
-	 *
-	 */
-	public function setAttribute($key, $value) {
-		if($key == 'value') {
-			$value = trim($value);
-			if($value == self::PLACEHOLDER_MARKUP) $value = '';
-			if($value == self::PLACEHOLDER_TEXT) return $this; // ignore value
-		}
-		return parent::setAttribute($key, $value); 	
 	}
 
 	/*

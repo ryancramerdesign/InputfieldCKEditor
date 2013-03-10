@@ -1,14 +1,19 @@
-# CKEditor rich text/HTML editor module for ProcessWire
+# CKEditor for ProcessWire
 
-This is currently a work in progress, not yet ready for production use. However, it should be fine to use and test outside of that. 
+[CKEditor](http://ckeditor.com/) is a web text editor like TinyMCE. This module can be used anywhere TinyMCE can be used in ProcessWire. 
 
-This does not yet do everything our TinyMCE module does, but it will by the time we are done with it. 
+CKEditor has a nice *inline* mode that is desirable in the page editor when you may have lots of rich text inputs. The reason for this is that the page editor loads a lot faster. Some people also prefer CKEditor for other reasons. 
 
-I am putting this on GitHub now rather than later in case anyone else wants to participate in the development of it. Also, for backup purposes. :)
+This ProcessWire module is currently a work in progress. However, it should be fine to use and test outside of that. It is tested and confirmed compatible with both repeaters and multi-language support. 
 
-This module is tested and confirmed compatible with both repeaters and multi-language support. 
+## How to install
 
-Like with TinyMCE will be overriding the *link* and *image* dialogs in CKEditor. Currently only the *link* dialog is functional in that respect, and the *image* dialog will be soon. As a result, the *image* dialog uses the CKEditor default at present.
+- Install the [MarkupHTMLPurifier module](https://github.com/ryancramerdesign/MarkupHTMLPurifier) module (required for inline mode).
+- Copy all the files from this module into /site/modules/InputfieldCKEditor/ 
+- Login to your admin and go to Modules > Check for new modules. Click *install* for InputfieldCKEditor. 
+- Now go to Setup > Fields and locate a textarea field that you want to use CKEditor (or create a new textarea field).
+- When editing the settings for a textarea field, click the *Details* tab. Change the *Inputfield Type* to *CKEditor* and save.
+- While still editing the field settings, click to the *Input* tab for CKEditor-specific settings you may optionally confiure. 
 
 ## Requirements
 
