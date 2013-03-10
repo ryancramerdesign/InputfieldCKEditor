@@ -16,19 +16,18 @@ multi-language support.
 1. Install the [MarkupHTMLPurifier module](https://github.com/ryancramerdesign/MarkupHTMLPurifier) 
    module (required for inline mode).
 
-2. Copy all the files from this module into: 
-  `/site/modules/InputfieldCKEditor/` 
+2. Copy all the files from this module into: `/site/modules/InputfieldCKEditor/` 
 
-3. Login to your admin and go to `Modules > Check for new modules`. 
-   Click `install` for `InputfieldCKEditor`. 
+3. Login to your admin and go to **Modules > Check for new modules**. 
+   Click **install** for **InputfieldCKEditor**. 
 
-4. Now go to `Setup > Fields` and locate a textarea field that you want 
+4. Now go to **Setup > Fields** and locate a textarea field that you want 
    to use CKEditor (or create a new textarea field).
 
-5. When editing the settings for a textarea field, click the `Details` tab. 
-   Change the `Inputfield Type` to `CKEditor` and save.
+5. When editing the settings for a textarea field, click the **Details** tab. 
+   Change the **Inputfield Type** to **CKEditor** and save.
 
-6. While still editing the field settings, click to the `Input` tab for 
+6. While still editing the field settings, click to the **Input** tab for 
    CKEditor-specific settings you may optionally configure. 
 
 ## Requirements
