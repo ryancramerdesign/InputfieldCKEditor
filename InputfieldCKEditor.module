@@ -37,6 +37,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 *
 	 */
 	const EXTRA_PLUGINS = 'pwimage,pwlink';
+	
+	/**
+	 * Default value for CK Editor removePlugins config option
+	 *
+	 */
+	const REMOVE_PLUGINS = 'image,link';
 
 	/**
 	 * Instance of MarkupHTMLPurifier module
@@ -82,6 +88,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 
 		$this->set('contentsCss', ''); 
 		$this->set('extraPlugins', self::EXTRA_PLUGINS); 
+		$this->set('removePlugins', self::REMOVE_PLUGINS); 
 	}
 
 	/**
@@ -121,6 +128,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			'baseHref' => wire('config')->urls->root, 
 			'contentsCss' => ($this->contentsCss ? $this->contentsCss : $defaultContentsCss),
 			'extraPlugins' => $this->extraPlugins,
+			'removePlugins' => $this->removePlugins,
 			'toolbar' => $this->toolbarStringToArray($this->toolbar),
 			'defaultLanguage' => $this->_('en'), // CKEditor language pack to use
 			);
@@ -279,6 +287,16 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->attr('name', 'extraPlugins');
 		$value = $this->get('extraPlugins');
 		$f->collapsed = ($value == self::EXTRA_PLUGINS ? Inputfield::collapsedYes : Inputfield::collapsedNo);
+		$f->attr('value', $value);
+		$wrapper->add($f);
+		
+		$f = $this->modules->get("InputfieldText");
+		$f->label = $this->_('Remove Plugins');
+		$f->description = $this->_('Comma separated list of removed plugins that CKEditor should not load.'); 
+		$f->notes = $this->_('Example: link,image');
+		$f->attr('name', 'removePlugins');
+		$value = $this->get('removePlugins');
+		$f->collapsed = ($value == self::REMOVE_PLUGINS ? Inputfield::collapsedYes : Inputfield::collapsedNo);
 		$f->attr('value', $value);
 		$wrapper->add($f);
 
