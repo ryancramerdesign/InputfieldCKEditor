@@ -36,7 +36,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 * Default value for CK Editor extraPlugins config option
 	 *
 	 */
-	const EXTRA_PLUGINS = 'pwimage,pwlink';
+	const EXTRA_PLUGINS = 'pwimage,pwlink,codemirror';
 	
 	/**
 	 * Default value for CK Editor removePlugins config option

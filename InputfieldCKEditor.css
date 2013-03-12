@@ -76,3 +76,17 @@
 .InputfieldForm .InputfieldCKEditorInline h4 {
 	font-size: 1.2em;
 }
+.InputfieldForm .InputfieldCKEditorInline h5 {
+	font-size: 1.1em;
+}
+.InputfieldForm .InputfieldCKEditorInline h6 {
+	font-size: 1.0em;
+}
+
+.InputfieldForm .InputfieldCKEditorInline table td,
+.InputfieldForm .InputfieldCKEditorInline table th {
+	padding: 3px; 
+}
+.InputfieldForm .InputfieldCKEditorInline table th {
+	font-weight: bold; 
+}
