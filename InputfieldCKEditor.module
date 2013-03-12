@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 100, 
+			'version' => 101, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -43,6 +43,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 *
 	 */
 	const REMOVE_PLUGINS = 'image,link';
+
+	/**
+	 * Version number for CKEditor directory
+	 *
+	 */
+	const CKEDITOR_VERSION = '4.1.0';
 
 	/**
 	 * Instance of MarkupHTMLPurifier module
@@ -154,7 +160,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			
 		if(self::$isConfigured) return;
 
-		$this->config->scripts->add($this->config->urls->InputfieldCKEditor . "ckeditor/ckeditor.js"); 
+		$this->config->scripts->add($this->config->urls->InputfieldCKEditor . "ckeditor-" . self::CKEDITOR_VERSION . "/ckeditor.js"); 
 
 		$cancelButtonLabel = $this->_('Cancel'); // Cancel button label
 

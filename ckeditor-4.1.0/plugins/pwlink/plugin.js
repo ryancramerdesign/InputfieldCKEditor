@@ -7,35 +7,38 @@
 		init: function(editor) {
 			
 		
-		var allowed = 'a[!href]',
-			required = 'a[href]';
+		var allowed = 'a[!href]';
+		var required = 'a[href]';
 
 		if ( CKEDITOR.dialog.isTabEnabled( editor, 'link', 'advanced' ) )
 			allowed = allowed.replace( ']', ',accesskey,charset,dir,id,lang,name,rel,tabindex,title,type]{*}(*)' );
+
 		if ( CKEDITOR.dialog.isTabEnabled( editor, 'link', 'target' ) )
 			allowed = allowed.replace( ']', ',target,onclick]' );
 
 		// Add the link and unlink buttons.
 		editor.addCommand('pwlink', {
-				allowedContent: allowed,
-				requiredContent: required,
-				exec: loadIframeLinkPicker
+			allowedContent: allowed,
+			requiredContent: required,
+			exec: loadIframeLinkPicker
 			}); 
-		editor.addCommand( 'anchor', new CKEDITOR.dialogCommand( 'anchor', {
+
+		editor.addCommand('anchor', new CKEDITOR.dialogCommand( 'anchor', {
 			allowedContent: 'a[!name,id]',
 			requiredContent: 'a[name]'
-		} ) );
-		editor.addCommand( 'unlink', new CKEDITOR.unlinkCommand() );
-		editor.addCommand( 'removeAnchor', new CKEDITOR.removeAnchorCommand() );
+			}));
+
+		editor.addCommand('unlink', new CKEDITOR.unlinkCommand());
+		editor.addCommand('removeAnchor', new CKEDITOR.removeAnchorCommand());
 
 		editor.setKeystroke( CKEDITOR.CTRL + 76 /*L*/, 'pwlink' );
-/*
+		/*
 		editor.ui.addButton('PWLink', {
 			label: editor.lang.link.toolbar, 
 			command: 'insertPwlink', 
 			icon: this.path + 'images/pwlink.png'
 		});
-*/		
+		*/		
 		
 		if ( editor.ui.addButton ) {
 			editor.ui.addButton( 'PWLink', {
@@ -77,13 +80,14 @@
 			target = node.getAttribute('target'); 
 			selection.selectElement(node); 
 			selectionText = node.getHtml();
-		} else if (node.getName() == 'img' ) {
+
+		} else if(node.getName() == 'img') {
 			var $img = $(node.$);
 			href = $img.parent("a").attr("href");
 			selectionText = node.$.outerHTML;
-		}
-		// If not on top of link and there is no text selected - just return (don't load iframe at all)
-		else if (selectionText.length < 1) {
+
+		} else if (selectionText.length < 1) {
+			// If not on top of link and there is no text selected - just return (don't load iframe at all)
 			return;
 		}
 
@@ -92,7 +96,7 @@
 			$i.find("#link_page_url").val(href);
 			$i.find("#ProcessPageEditLinkForm").data('iframe', $iframe);
 			if(target && target.length) $i.find("#link_target").attr('checked', 'checked');
-						});
+		});
 
 		var windowWidth = $(window).width()-300;
 		var windowHeight = $(window).height()-300;
@@ -102,36 +106,35 @@
 		var cancelLabel = config.InputfieldCKEditor.pwlink.cancel;
 
 		$iframe.dialog({
-				title: insertLinkLabel,
-				height: windowHeight,
-				width: windowWidth,
-				position: [150,80],
-				modal: true,
-				overlay: {
-						opacity: 0.7,
-						background: "black"
-				},
-				buttons: [
-					{
-						text: insertLinkLabel,
-						click: function() {
+			title: insertLinkLabel,
+			height: windowHeight,
+			width: windowWidth,
+			position: [150,80],
+			modal: true,
+			overlay: {
+				opacity: 0.7,
+				background: "black"
+			},
+			buttons: [ {
+					text: insertLinkLabel,
+					click: function() {
 
-							var $i = $iframe.contents();
-							var url = $("#link_page_url", $i).val();
-							var target = $("#link_target", $i).is(":checked") ? "_blank" : '';
+						var $i = $iframe.contents();
+						var url = $("#link_page_url", $i).val();
+						var target = $("#link_target", $i).is(":checked") ? "_blank" : '';
 
-							if(target && target.length > 0) target = ' target="' + target + '"';
-							if(url.length) {
-								var html = '<a href="' + url + '"' + target + '>' + selectionText + '</a>';
-								editor.insertHtml(html); 
-							}
-							$iframe.dialog("close");
-								}
-						}, {
-								text: cancelLabel,
-								click: function() { $iframe.dialog("close"); }
+						if(target && target.length > 0) target = ' target="' + target + '"';
+						if(url.length) {
+							var html = '<a href="' + url + '"' + target + '>' + selectionText + '</a>';
+							editor.insertHtml(html); 
 						}
-				]
+						$iframe.dialog("close");
+					}
+				}, {
+					text: cancelLabel,
+					click: function() { $iframe.dialog("close"); }
+				} 
+			]
 		}).width(windowWidth).height(windowHeight);
 	}
 	
