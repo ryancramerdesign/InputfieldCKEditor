@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 101, 
+			'version' => 102, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -36,7 +36,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 * Default value for CK Editor extraPlugins config option
 	 *
 	 */
-	const EXTRA_PLUGINS = 'pwimage,pwlink,codemirror';
+	const EXTRA_PLUGINS = 'pwimage,pwlink,sourcedialog';
 	
 	/**
 	 * Default value for CK Editor removePlugins config option
@@ -89,7 +89,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			"PWLink, Unlink, Anchor\n" . 
 			"PWImage, Table, HorizontalRule, SpecialChar\n" . 
 			"PasteText, PasteFromWord\n" . 
-			"Scayt, -, Source"
+			"Scayt, -, Sourcedialog"
 			); 
 
 		$this->set('contentsCss', ''); 
