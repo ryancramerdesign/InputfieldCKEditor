@@ -93,6 +93,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			); 
 
 		$this->set('contentsCss', ''); 
+		$this->set('stylesSet', ''); 
 		$this->set('extraPlugins', self::EXTRA_PLUGINS); 
 		$this->set('removePlugins', self::REMOVE_PLUGINS); 
 	}
@@ -138,6 +139,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			'toolbar' => $this->toolbarStringToArray($this->toolbar),
 			'defaultLanguage' => $this->_('en'), // CKEditor language pack to use
 			);
+
+		if($this->stylesSet) $config['stylesSet'] = $this->stylesSet; 
 
 		// optimization to remember the name of our JS config entry to prevent redundancy in multi-lang fields
 		if(!$this->configName) $this->configName = $this->className() . '_' . $this->name; 
@@ -282,6 +285,16 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->notes = $this->_('Example: /site/templates/styles/contents.css');
 		$f->attr('name', 'contentsCss');
 		$value = $this->get('contentsCss');
+		$f->collapsed = Inputfield::collapsedBlank;
+		$f->attr('value', $value);
+		$wrapper->add($f);
+
+		$f = $this->modules->get("InputfieldText");
+		$f->label = $this->_('Custom Editor JS Styles Set');
+		$f->description = $this->_('See the CKEditor [config.stylesSet](http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-stylesSet) option for how to use this.'); 
+		$f->notes = $this->_('Example: mystyles:http://domain.com/site/templates/scripts/styles.js');
+		$f->attr('name', 'stylesSet');
+		$value = $this->get('stylesSet');
 		$f->collapsed = Inputfield::collapsedBlank;
 		$f->attr('value', $value);
 		$wrapper->add($f);
