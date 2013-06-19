@@ -42,7 +42,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 * Default value for CK Editor removePlugins config option
 	 *
 	 */
-	const REMOVE_PLUGINS = 'image,link';
+	const REMOVE_PLUGINS = 'image,link,magicline';
 
 	/**
 	 * Version number for CKEditor directory
@@ -138,6 +138,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			'removePlugins' => $this->removePlugins,
 			'toolbar' => $this->toolbarStringToArray($this->toolbar),
 			'defaultLanguage' => $this->_('en'), // CKEditor language pack to use
+			'enterMode' => 'CKEDITOR.ENTER_P'
 			);
 
 		if($this->stylesSet) $config['stylesSet'] = $this->stylesSet; 
@@ -227,13 +228,18 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$value = trim($input[$this->name]); 
 		if($value == self::PLACEHOLDER_TEXT) return $this; // ignore value
 
+		// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
+		// so we attempt to fix that issue here 
+		$value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+
 		if($this->inlineMode && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
 			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier'); 
+			self::$purifier->set('Attr.AllowedFrameTargets', array('_blank')); // allow links opened in new window/tab
 			$value = self::$purifier->purify($value); 		
 		}
 
-		// this value sometimes appears in CKEditor, and we don't want it
-		if($value == "<p><br /></p>") $value = '';
+		// remove gratitutious whitespace added by CKEditor
+		$value = str_replace(array('<p><br /></p>', '<p>&nbsp;</p>'), '', $value); 
 
 		if($value != $this->attr('value')) {
 			$this->trackChange('value');
