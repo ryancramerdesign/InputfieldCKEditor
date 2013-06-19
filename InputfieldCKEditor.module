@@ -228,7 +228,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		if($value == self::PLACEHOLDER_TEXT) return $this; // ignore value
 
 		if($this->inlineMode && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
-			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier'); 
+			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier');
+			self::$purifier->set('Attr.AllowedFrameTargets', array('_blank')); // allow links opened in new window/tab
 			$value = self::$purifier->purify($value); 		
 		}
 
