@@ -4,7 +4,7 @@
  */
 
 .InputfieldForm .InputfieldCKEditorInline {
-	padding: 15px; 
+	padding: 10px; 
 	border: 1px dashed #ccc; 
 	overflow: hidden;
 }
@@ -28,15 +28,29 @@
  *
  */
 
-.InputfieldForm .InputfieldCKEditorInline {
-	font-size: 1.1em; 
+.InputfieldForm .InputfieldCKEditorInline p,
+.InputfieldForm .InputfieldCKEditorInline li,
+.InputfieldForm .InputfieldCKEditorInline dl,
+.InputfieldFrom .InputfieldCKEditorInline td {
+	font-size: 13px; 
 	color: #333; 
 	background: #fff; 
 }
 
+.InputfieldForm .InputfieldCKEditorInline a {
+	color: #333;
+	text-decoration: underline; 
+}
+.InputfieldForm .InputfieldCKEditorInline a:hover {
+	color: #333;
+	background-color: #ffffdd; 
+}
+
+.InputfieldForm .InputfieldCKEditorInline i,
 .InputfieldForm .InputfieldCKEditorInline em {
 	font-style: italic; 
 }
+.InputfieldForm .InputfieldCKEditorInline b,
 .InputfieldForm .InputfieldCKEditorInline strong {
 	font-weight: bold; 
 }
@@ -71,16 +85,16 @@
 	font-size: 1.7em;
 }
 .InputfieldForm .InputfieldCKEditorInline h3 {
-	font-size: 1.4em; 
+	font-size: 1.5em; 
 }
 .InputfieldForm .InputfieldCKEditorInline h4 {
-	font-size: 1.2em;
+	font-size: 1.3em;
 }
 .InputfieldForm .InputfieldCKEditorInline h5 {
-	font-size: 1.1em;
+	font-size: 1.2em;
 }
 .InputfieldForm .InputfieldCKEditorInline h6 {
-	font-size: 1.0em;
+	font-size: 1.1em;
 }
 
 .InputfieldForm .InputfieldCKEditorInline table td,

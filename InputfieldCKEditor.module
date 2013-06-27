@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 103, 
+			'version' => 104, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -48,7 +48,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 * Version number for CKEditor directory
 	 *
 	 */
-	const CKEDITOR_VERSION = '4.1.0';
+	const CKEDITOR_VERSION = '4.1.2';
 
 	/**
 	 * Instance of MarkupHTMLPurifier module
@@ -137,7 +137,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			'extraPlugins' => $this->extraPlugins,
 			'removePlugins' => $this->removePlugins,
 			'toolbar' => $this->toolbarStringToArray($this->toolbar),
-			'defaultLanguage' => $this->_('en'), // CKEditor language pack to use
+			'defaultLanguage' => $this->_x('en', 'language-pack'), // CKEditor default language pack to use
 			'enterMode' => 'CKEDITOR.ENTER_P'
 			);
 
@@ -169,7 +169,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$cancelButtonLabel = $this->_('Cancel'); // Cancel button label
 
 		$config = array(
-			'language' => $this->_('en'), // 2 character language code, lowercase
+			'language' => $this->_x('en', 'language-code'), // 2 character language code, lowercase
 			'pwlink' => array(
 				'label' => $this->_('Insert Link'), // Insert link label, window headline and button text
 				'cancel' => $cancelButtonLabel
@@ -230,7 +230,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 
 		// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
 		// so we attempt to fix that issue here 
-		$value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+		// $value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
 
 		if($this->inlineMode && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
 			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier'); 
