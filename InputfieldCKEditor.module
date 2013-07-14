@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 104, 
+			'version' => 105, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -43,6 +43,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 *
 	 */
 	const REMOVE_PLUGINS = 'image,link,magicline';
+
+	/**
+	 * Default value for CK Editor extraAllowedContent option
+	 *
+	 */
+	const EXTRA_ALLOWED_CONTENT = ''; 
 
 	/**
 	 * Version number for CKEditor directory
@@ -96,6 +102,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$this->set('stylesSet', ''); 
 		$this->set('extraPlugins', self::EXTRA_PLUGINS); 
 		$this->set('removePlugins', self::REMOVE_PLUGINS); 
+		$this->set('extraAllowedContent', self::EXTRA_ALLOWED_CONTENT); 
 	}
 
 	/**
@@ -134,6 +141,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$config = array(
 			'baseHref' => wire('config')->urls->root, 
 			'contentsCss' => ($this->contentsCss ? $this->contentsCss : $defaultContentsCss),
+			'extraAllowedContent' => $this->extraAllowedContent, 
 			'extraPlugins' => $this->extraPlugins,
 			'removePlugins' => $this->removePlugins,
 			'toolbar' => $this->toolbarStringToArray($this->toolbar),
@@ -302,6 +310,16 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->attr('name', 'stylesSet');
 		$value = $this->get('stylesSet');
 		$f->collapsed = Inputfield::collapsedBlank;
+		$f->attr('value', $value);
+		$wrapper->add($f);
+
+		$f = $this->modules->get("InputfieldText");
+		$f->label = $this->_('Extra Allowed Content');
+		$f->description = $this->_('Allowed content rules per CKEditor [extraAllowedContent](http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-extraAllowedContent) option.'); 
+		$f->notes = $this->_('See [details](http://docs.ckeditor.com/#!/guide/dev_allowed_content_rules-section-2) in CKEditor documentation.');
+		$f->attr('name', 'extraAllowedContent');
+		$value = $this->get('extraAllowedContent');
+		$f->collapsed = ($value == self::EXTRA_ALLOWED_CONTENT ? Inputfield::collapsedYes : Inputfield::collapsedNo);
 		$f->attr('value', $value);
 		$wrapper->add($f);
 
