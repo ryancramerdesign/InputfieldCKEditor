@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 105, 
+			'version' => 106, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -88,6 +88,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		parent::__construct();
 
 		$this->set('inlineMode', 0); 
+		$this->set('usePurifier', 1); 
+		$this->set('useACF', 1); 
 
 		$this->set('toolbar', '' . 
 			"Format, Bold, Italic, -, RemoveFormat\n" . 
@@ -148,6 +150,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			'defaultLanguage' => $this->_x('en', 'language-pack'), // CKEditor default language pack to use
 			'enterMode' => 'CKEDITOR.ENTER_P'
 			);
+
+		if(!$this->useACF) $config['allowedContent'] = true; // disables ACF, per CKEditor docs
 
 		if($this->stylesSet) $config['stylesSet'] = $this->stylesSet; 
 
@@ -239,11 +243,14 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
 		// so we attempt to fix that issue here 
 		// $value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+		$length = strlen($value); 
 
-		if($this->inlineMode && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
+		if($length && $this->usePurifier && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
 			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier'); 
 			self::$purifier->set('Attr.AllowedFrameTargets', array('_blank')); // allow links opened in new window/tab
 			$value = self::$purifier->purify($value); 		
+			$newLength = strlen($value); 
+			$this->message("HTML Purifier: $this->name (before: $length bytes, after: $newLength bytes)", Notice::debug); 
 		}
 
 		// remove gratitutious whitespace added by CKEditor
@@ -264,6 +271,9 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public function ___getConfigInputfields() {
 
 		$inputfields = parent::___getConfigInputfields();
+	
+		$yes = $this->_('Yes');
+		$no = $this->_('No');
 
 		$f = $inputfields->get('stripTags');
 		if($f) $inputfields->remove($f);
@@ -281,6 +291,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->description = $this->_('Separate each toolbar item with a comma. Group items by placing them on the same line and use a hyphen "-" where you want a separator to appear within a group. If you want more than one toolbar row, separate each row with a blank line.'); // Toolbar options description
 		$wrapper->add($f); 
 
+		$purifierInstalled = wire('modules')->isInstalled('MarkupHTMLPurifier'); 
+
 		$f = wire('modules')->get('InputfieldRadios'); 
 		$f->attr('name', 'inlineMode'); 
 		$f->label = $this->_('Editor Mode');
@@ -289,9 +301,43 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->attr('value', (int) $this->inlineMode); 
 		$f->description = $this->_('When inline mode is enabled, the editor will not be loaded until you click in the text. This is more faster and more efficient when there are numerous CKEditor fields on the page. However, it may not support as many features or editor customizations as regular mode.'); // Mode selection description
 		$f->notes = $this->_('*Inline mode requires that the HTML Purifier module is installed (MarkupHTMLPurifier).'); 
-		if(wire('modules')->isInstalled('MarkupHTMLPurifier')) $f->notes = $this->_('*The required HTML Purifier module is installed.'); 
+		if($purifierInstalled) $f->notes = $this->_('*The required HTML Purifier module is installed.'); 
 			else $f->notes .= "\n" . $this->_('WARNING: it is not currently installed. You should install it before enabling inline mode.'); 
+		$f->optionColumns = 1;
 		$wrapper->add($f); 
+
+		$f = $this->modules->get("InputfieldRadios"); 
+		$f->label = $this->_('Use ACF?'); 
+		$f->description = $this->_('When yes, the CKEditor Advanced Content Filter (ACF) will be active. This filter automatically strips any unrecognized markup or attributes from your HTML. Recommended.'); 
+		$f->attr('name', 'useACF'); 
+		$f->addOption(1, $yes);
+		$f->addOption(0, $no);
+		$f->attr('value', $this->useACF); 
+		$f->columnWidth = 50; 
+		$f->optionColumns = 1;
+		$wrapper->add($f); 
+
+		$f = $this->modules->get("InputfieldRadios"); 
+		$f->label = $this->_('Use HTML Purifier?'); 
+		$f->description = $this->_('When yes, submitted content is run through [HTML Purifier](http://htmlpurifier.org/) for sanitization. This is recommended when using CKEditor for either inline mode or non-trusted users.'); 
+		$f->attr('name', 'usePurifier'); 
+		$f->addOption(1, $yes);
+		$f->addOption(0, $no);
+		$f->attr('value', $this->usePurifier && $purifierInstalled ? 1 : 0); 
+		if(!$purifierInstalled) $f->attr('disabled', 'disabled'); 
+		$f->columnWidth = 50; 
+		$f->optionColumns = 1;
+		$wrapper->add($f); 
+
+		$f = $this->modules->get("InputfieldText");
+		$f->label = $this->_('Extra Allowed Content');
+		$f->description = $this->_('Allowed content rules per CKEditor [extraAllowedContent](http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-extraAllowedContent) option. Applies only if the "Use ACF" checkbox above is checked.'); 
+		$f->notes = $this->_('See [details](http://docs.ckeditor.com/#!/guide/dev_allowed_content_rules-section-2) in CKEditor documentation.');
+		$f->attr('name', 'extraAllowedContent');
+		$value = $this->get('extraAllowedContent');
+		$f->collapsed = ($value == self::EXTRA_ALLOWED_CONTENT ? Inputfield::collapsedYes : Inputfield::collapsedNo);
+		$f->attr('value', $value);
+		$wrapper->add($f);
 
 		$f = $this->modules->get("InputfieldText");
 		$f->label = $this->_('Custom Editor CSS File');
@@ -310,16 +356,6 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->attr('name', 'stylesSet');
 		$value = $this->get('stylesSet');
 		$f->collapsed = Inputfield::collapsedBlank;
-		$f->attr('value', $value);
-		$wrapper->add($f);
-
-		$f = $this->modules->get("InputfieldText");
-		$f->label = $this->_('Extra Allowed Content');
-		$f->description = $this->_('Allowed content rules per CKEditor [extraAllowedContent](http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-extraAllowedContent) option.'); 
-		$f->notes = $this->_('See [details](http://docs.ckeditor.com/#!/guide/dev_allowed_content_rules-section-2) in CKEditor documentation.');
-		$f->attr('name', 'extraAllowedContent');
-		$value = $this->get('extraAllowedContent');
-		$f->collapsed = ($value == self::EXTRA_ALLOWED_CONTENT ? Inputfield::collapsedYes : Inputfield::collapsedNo);
 		$f->attr('value', $value);
 		$wrapper->add($f);
 
