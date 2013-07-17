@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 106, 
+			'version' => 107, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -49,6 +49,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 *
 	 */
 	const EXTRA_ALLOWED_CONTENT = ''; 
+
+	/**
+	 * Default value for CK Editor format_tags option
+	 *
+	 */
+	const FORMAT_TAGS = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
 
 	/**
 	 * Version number for CKEditor directory
@@ -105,6 +111,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$this->set('extraPlugins', self::EXTRA_PLUGINS); 
 		$this->set('removePlugins', self::REMOVE_PLUGINS); 
 		$this->set('extraAllowedContent', self::EXTRA_ALLOWED_CONTENT); 
+		$this->set('formatTags', self::FORMAT_TAGS); 
 	}
 
 	/**
@@ -147,6 +154,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			'extraPlugins' => $this->extraPlugins,
 			'removePlugins' => $this->removePlugins,
 			'toolbar' => $this->toolbarStringToArray($this->toolbar),
+			'format_tags' => $this->formatTags, 
 			'defaultLanguage' => $this->_x('en', 'language-pack'), // CKEditor default language pack to use
 			'enterMode' => 'CKEDITOR.ENTER_P'
 			);
@@ -328,6 +336,16 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->columnWidth = 50; 
 		$f->optionColumns = 1;
 		$wrapper->add($f); 
+
+		$f = $this->modules->get("InputfieldText");
+		$f->label = $this->_('Format Tags');
+		$f->description = $this->_('Semicolon-separated list of selectable tags shown in the "format" dropdown.'); 
+		$f->notes = $this->_('Default format tags are:') . ' ' . self::FORMAT_TAGS; 
+		$f->attr('name', 'formatTags');
+		$value = $this->get('formatTags');
+		$f->collapsed = ($value == self::FORMAT_TAGS ? Inputfield::collapsedYes : Inputfield::collapsedNo);
+		$f->attr('value', $value);
+		$wrapper->add($f);
 
 		$f = $this->modules->get("InputfieldText");
 		$f->label = $this->_('Extra Allowed Content');
