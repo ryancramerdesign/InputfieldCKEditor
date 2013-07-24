@@ -7,6 +7,7 @@
 	padding: 10px; 
 	border: 1px dashed #ccc; 
 	overflow: hidden;
+	background: #fff; 
 }
 
 .InputfieldForm .InputfieldCKEditorInline *:first-child {
@@ -39,10 +40,12 @@
 
 .InputfieldForm .InputfieldCKEditorInline a {
 	color: #333;
+	opacity: 0.8; 
 	text-decoration: underline; 
 }
 .InputfieldForm .InputfieldCKEditorInline a:hover {
 	color: #333;
+	opacity: 1.0; 
 	background-color: #ffffdd; 
 }
 
