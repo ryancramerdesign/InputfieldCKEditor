@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 108, 
+			'version' => 109, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -160,8 +160,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			);
 
 		if(!$this->useACF) $config['allowedContent'] = true; // disables ACF, per CKEditor docs
-
 		if($this->stylesSet) $config['stylesSet'] = $this->stylesSet; 
+		if($this->rows) $config['height'] = ($this->rows*2) . 'em'; // set editor height, based on rows value
 
 		// optimization to remember the name of our JS config entry to prevent redundancy in multi-lang fields
 		if(!$this->configName) $this->configName = $this->className() . '_' . $this->name; 
