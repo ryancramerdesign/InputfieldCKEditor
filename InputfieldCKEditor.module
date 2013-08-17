@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 110, 
+			'version' => 111, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -146,6 +146,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$this->globalConfig();
 		$class = $this->className();
 		$defaultContentsCss = wire('config')->urls->$class . '/contents.css'; 
+
+		// previous versions had a default setting removing the 'link' plugin, but now the Anchor
+		// tool requires it. this code fixes that situation for existing installations. 
+		if(stripos($this->toolbar, 'Anchor') !== false && stripos($this->removePlugins, 'link') !== false) {
+			$this->removePlugins = preg_replace('/\blink,?\b/i','', $this->removePlugins); 
+		}
 
 		$config = array(
 			'baseHref' => wire('config')->urls->root, 
