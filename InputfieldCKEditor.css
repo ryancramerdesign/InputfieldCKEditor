@@ -107,3 +107,7 @@
 .InputfieldForm .InputfieldCKEditorInline table th {
 	font-weight: bold; 
 }
+
+.InputfieldForm img.cke_anchor {
+	display: inline; 
+}
