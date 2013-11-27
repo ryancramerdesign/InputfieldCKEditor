@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 111, 
+			'version' => 112, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -60,7 +60,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 * Version number for CKEditor directory
 	 *
 	 */
-	const CKEDITOR_VERSION = '4.2.0';
+	const CKEDITOR_VERSION = '4.3.0';
 
 	/**
 	 * Instance of MarkupHTMLPurifier module
@@ -313,7 +313,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->addOption(0, $this->_('Regular Editor')); 
 		$f->addOption(1, $this->_('Inline Editor *')); 
 		$f->attr('value', (int) $this->inlineMode); 
-		$f->description = $this->_('When inline mode is enabled, the editor will not be loaded until you click in the text. This is more faster and more efficient when there are numerous CKEditor fields on the page. However, it may not support as many features or editor customizations as regular mode.'); // Mode selection description
+		$f->description = $this->_('When inline mode is enabled, the editor will not be loaded until you click in the text. This is faster and more efficient when there are numerous CKEditor fields on the page. However, it may not support as many features or editor customizations as regular mode.'); // Mode selection description
 		$f->notes = $this->_('*Inline mode requires that the HTML Purifier module is installed (MarkupHTMLPurifier).'); 
 		if($purifierInstalled) $f->notes = $this->_('*The required HTML Purifier module is installed.'); 
 			else $f->notes .= "\n" . $this->_('WARNING: it is not currently installed. You should install it before enabling inline mode.'); 

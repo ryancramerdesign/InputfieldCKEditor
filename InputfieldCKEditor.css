@@ -33,7 +33,7 @@
 .InputfieldForm .InputfieldCKEditorInline li,
 .InputfieldForm .InputfieldCKEditorInline dl,
 .InputfieldFrom .InputfieldCKEditorInline td {
-	font-size: 13px; 
+	font-size: 1em; 
 	color: #333; 
 	background: #fff; 
 }
@@ -79,6 +79,8 @@
 .InputfieldForm .InputfieldCKEditorInline h5 {
 	color: #333; 
 	font-family: Arial, sans-serif;
+	font-weight: normal;
+	text-transform: none; 
 }
 
 .InputfieldForm .InputfieldCKEditorInline h1 {

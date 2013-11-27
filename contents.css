@@ -7,7 +7,7 @@ body
 {
 	/* Font */
 	font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
-	font-size: 12px;
+	font-size: 14px;
 
 	/* Text color */
 	color: #333;
@@ -15,12 +15,12 @@ body
 	/* Remove the background color to make it transparent */
 	background-color: #fff;
 
-	margin: 20px;
+	margin: 10px;
 }
 
 .cke_editable
 {
-	font-size: 13px;
+	font-size: 14px; 
 	line-height: 1.6em;
 }
 
