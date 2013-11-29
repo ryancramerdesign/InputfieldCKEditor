@@ -67,8 +67,8 @@
 		var $textarea = $('textarea#' + editor.name); // get textarea of this instance
 		var $langWrapper = $textarea.closest('.LanguageSupport');
 		if($langWrapper.length) lang_id = "&lang=" + $langWrapper.data("language");
-
-		var modalUri = config.urls.admin + 'page/link/?id=' + page_id + '&modal=1' + lang_id;
+		// typo's fixed
+		var modalUrl = config.urls.admin + 'page/link/?id=' + pageID + '&modal=1' + lang_id;
 		var $iframe = $('<iframe id="pwlink_iframe" frameborder="0" src="' + modalUrl + '"></iframe>');
 		var selection = editor.getSelection(true);
 		var selectionElement = selection.getSelectedElement();
