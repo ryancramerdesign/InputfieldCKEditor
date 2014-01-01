@@ -57,6 +57,11 @@
 .InputfieldForm .InputfieldCKEditorInline strong {
 	font-weight: bold; 
 }
+.InputfieldForm .InputfieldCKEditorInline strong em,
+.InputfieldForm .InputfieldCKEditorInline em strong {
+	font-weight: bold; 
+	font-style: italic; 
+}
 .InputfieldForm .InputfieldCKEditorInline ul li {
 	list-style: disc;
 	display: list-item; 

@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 113, 
+			'version' => 114, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -162,7 +162,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			'toolbar' => $this->toolbarStringToArray($this->toolbar),
 			'format_tags' => $this->formatTags, 
 			'defaultLanguage' => $this->_x('en', 'language-pack'), // CKEditor default language pack to use
-			'enterMode' => 'CKEDITOR.ENTER_P'
+			'enterMode' => 'CKEDITOR.ENTER_P',
+			'entities' => false,
 			);
 
 		if(!$this->useACF) $config['allowedContent'] = true; // disables ACF, per CKEditor docs
@@ -235,12 +236,29 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			return $this->renderNormal();
 		}
 
-		$value = $this->attr('value'); 
+		$value = $this->purifyValue($this->attr('value')); 
 
 		$out = 	"<div id='{$this->id}_ckeditor' class='InputfieldCKEditorInline' contenteditable='true' data-configName='$this->configName'>$value</div>" . 
 			"<input type='hidden' name='$this->name' id='$this->id' value='" . self::PLACEHOLDER_TEXT . "' />";
 
 		return $out; 
+	}
+	
+	protected function purifyValue($value) {
+		$length = strlen($value);
+		if($length && $this->usePurifier && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
+			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier');
+			self::$purifier->set('Attr.AllowedFrameTargets', array('_blank')); // allow links opened in new window/tab
+			$value = self::$purifier->purify($value);
+			$newLength = strlen($value);
+			if($length != $newLength) $this->message("HTML Purifier: $this->name (before: $length bytes, after: $newLength bytes)", Notice::debug);
+		}
+		// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
+		// so we attempt to fix that issue here 
+		// $value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+		// remove gratitutious whitespace added by CKEditor
+		$value = str_replace(array('<p><br /></p>', '<p>&nbsp;</p>'), '', $value); 
+		return $value; 
 	}
 
 	/**
@@ -254,21 +272,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$value = trim($input[$this->name]); 
 		if($value == self::PLACEHOLDER_TEXT) return $this; // ignore value
 
-		// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
-		// so we attempt to fix that issue here 
-		// $value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
-		$length = strlen($value); 
-
-		if($length && $this->usePurifier && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
-			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier'); 
-			self::$purifier->set('Attr.AllowedFrameTargets', array('_blank')); // allow links opened in new window/tab
-			$value = self::$purifier->purify($value); 		
-			$newLength = strlen($value); 
-			$this->message("HTML Purifier: $this->name (before: $length bytes, after: $newLength bytes)", Notice::debug); 
-		}
-
-		// remove gratitutious whitespace added by CKEditor
-		$value = str_replace(array('<p><br /></p>', '<p>&nbsp;</p>'), '', $value); 
+		$value = $this->purifyValue($value); 
 
 		if($value != $this->attr('value')) {
 			$this->trackChange('value');
