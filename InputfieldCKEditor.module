@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 114, 
+			'version' => 116, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -60,7 +60,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 * Version number for CKEditor directory
 	 *
 	 */
-	const CKEDITOR_VERSION = '4.3.0';
+	const CKEDITOR_VERSION = '4.3.2';
 
 	/**
 	 * Instance of MarkupHTMLPurifier module
@@ -145,7 +145,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 
 		$this->globalConfig();
 		$class = $this->className();
-		$defaultContentsCss = wire('config')->urls->$class . '/contents.css'; 
+		$defaultContentsCss = wire('config')->urls->$class . 'contents.css'; 
 
 		// previous versions had a default setting removing the 'link' plugin, but now the Anchor
 		// tool requires it. this code fixes that situation for existing installations. 
@@ -245,19 +245,25 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	}
 	
 	protected function purifyValue($value) {
+
 		$length = strlen($value);
+
 		if($length && $this->usePurifier && wire('modules')->isInstalled('MarkupHTMLPurifier')) {
 			if(is_null(self::$purifier)) self::$purifier = wire('modules')->get('MarkupHTMLPurifier');
 			self::$purifier->set('Attr.AllowedFrameTargets', array('_blank')); // allow links opened in new window/tab
-			$value = self::$purifier->purify($value);
+			self::$purifier->set('Attr.EnableID', stripos($this->toolbar, 'anchor') !== false); // for anchor plugin use of id and name attributes
+			$value = self::$purifier->purify($value); 
 			$newLength = strlen($value);
 			if($length != $newLength) $this->message("HTML Purifier: $this->name (before: $length bytes, after: $newLength bytes)", Notice::debug);
 		}
+
 		// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
 		// so we attempt to fix that issue here 
-		// $value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+		$value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+
 		// remove gratitutious whitespace added by CKEditor
 		$value = str_replace(array('<p><br /></p>', '<p>&nbsp;</p>'), '', $value); 
+
 		return $value; 
 	}
 
