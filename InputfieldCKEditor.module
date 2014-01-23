@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 116, 
+			'version' => 117, 
 			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
 			);
 	}
@@ -107,6 +107,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			); 
 
 		$this->set('contentsCss', ''); 
+		$this->set('contentsInlineCss', ''); 
 		$this->set('stylesSet', ''); 
 		$this->set('extraPlugins', self::EXTRA_PLUGINS); 
 		$this->set('removePlugins', self::REMOVE_PLUGINS); 
@@ -235,6 +236,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			$this->error($this->_('CKEditor inline mode requires the MarkupHTMLPurifier module. Using normal mode instead.')); 
 			return $this->renderNormal();
 		}
+		if($this->contentsInlineCss) $this->config->styles->add($this->contentsInlineCss); 
+			else $this->config->styles->add($this->config->urls->InputfieldCKEditor . "contents-inline.css"); 
 
 		$value = $this->purifyValue($this->attr('value')); 
 
@@ -244,6 +247,12 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		return $out; 
 	}
 	
+	/**
+	 * Clean up a value that will be sent to/from the editor
+	 *
+	 * This is primarily for HTML Purifier 
+	 *
+	 */
 	protected function purifyValue($value) {
 
 		$length = strlen($value);
@@ -343,7 +352,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 
 		$f = $this->modules->get("InputfieldRadios"); 
 		$f->label = $this->_('Use HTML Purifier?'); 
-		$f->description = $this->_('When yes, submitted content is run through [HTML Purifier](http://htmlpurifier.org/) for sanitization. This is recommended when using CKEditor for either inline mode or non-trusted users.'); 
+		$f->description = $this->_('When yes, submitted content is run through [HTML Purifier](http://htmlpurifier.org/) for sanitization. This is a must have when using CKEditor for either inline mode or non-trusted users. Recommended either way.'); 
 		$f->attr('name', 'usePurifier'); 
 		$f->addOption(1, $yes);
 		$f->addOption(0, $no);
@@ -373,20 +382,36 @@ class InputfieldCKEditor extends InputfieldTextarea {
 		$f->attr('value', $value);
 		$wrapper->add($f);
 
+		$descriptionCustomCss = $this->_('This option enables you to modify the way that text and other elements appear in your editor. This covers how they look in the administrative environment only, and has nothing to do with the front-end of your site.'); // contents.css description
+		$instructionsCustomCss = $this->_('Please see our [instructions](https://github.com/ryancramerdesign/InputfieldCKEditor#custom-editor-css-file) on how to use this.'); // custom editor css instructions
+
 		$f = $this->modules->get("InputfieldText");
-		$f->label = $this->_('Custom Editor CSS File');
-		$f->description = $this->_("This option is only available in regular editor mode. Optionally specify a contents.css file URL (relative to your site root) and CKEditor will use this file for the editor rather than the default one in /site/modules/InputfieldCKEditor/contents.css."); // content.css description
-		$f->notes = $this->_('Example: /site/templates/styles/contents.css');
+		$f->label = $this->_('Custom Editor CSS File (regular mode)');
+		$f->description = $descriptionCustomCss; 
+		$f->notes = $this->_('Example: /site/templates/styles/contents.css') . "\n" . $instructionsCustomCss;
 		$f->attr('name', 'contentsCss');
 		$value = $this->get('contentsCss');
 		$f->collapsed = Inputfield::collapsedBlank;
 		$f->attr('value', $value);
+		$f->showIf = "inlineMode<1";
+		$wrapper->add($f);
+
+		$f = $this->modules->get("InputfieldText");
+		$f->label = $this->_('Custom Editor CSS File (inline mode)');
+		$f->description = $descriptionCustomCss; 
+		$f->notes .= $this->_('**Example:** /site/templates/styles/contents-inline.css') . "\n" . $instructionsCustomCss; 
+		$f->attr('name', 'contentsInlineCss');
+		$value = $this->get('contentsInlineCss');
+		$f->collapsed = Inputfield::collapsedBlank;
+		$f->attr('value', $value);
+		$f->showIf = 'inlineMode=1';
 		$wrapper->add($f);
 
 		$f = $this->modules->get("InputfieldText");
 		$f->label = $this->_('Custom Editor JS Styles Set');
-		$f->description = $this->_('See the CKEditor [config.stylesSet](http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-stylesSet) option for how to use this.'); 
-		$f->notes = $this->_('Example: mystyles:http://domain.com/site/templates/scripts/styles.js');
+		$f->description = $this->_('This option enables you to specify custom styles for selection in your editor. It requires that you have a "Styles" item in your toolbar settings above.'); // styles set description
+		$f->notes = $this->_('**Example:** mystyles:http://domain.com/site/templates/scripts/mystyles.js'); // styles set example
+		$f->notes .= "\n" . $this->_('Please see our [instructions](https://github.com/ryancramerdesign/InputfieldCKEditor#custom-editor-js-styles-set) on how to use this.'); // styles set notes
 		$f->attr('name', 'stylesSet');
 		$value = $this->get('stylesSet');
 		$f->collapsed = Inputfield::collapsedBlank;
