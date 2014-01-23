@@ -80,9 +80,9 @@ We recommend using Regular Mode in these instances:
 
 ## Advanced Tips
 
-**This section contains contextual instructions that are linked to from 
+This section contains contextual instructions that are linked to from 
 within the module. These cover specific needs during field configuration
-and you do not need to read this section in order to use CKEditor.**
+and you do not need to read this section in order to use CKEditor.
 
 
 ### Custom Editor JS Styles Set
@@ -115,7 +115,7 @@ users can choose from your editor.**
 4. On your server (i.e. through FTP or at the command line) copy this file...  
    `/site/modules/InputfieldCKEditor/ckeditor-4.3.2/styles.js`   
    ...to this file (that you specified in step 3):     
-   /site/templates/scripts/mystyles.js`
+   `/site/templates/scripts/mystyles.js`
 
 5. Edit and modify the file you copied in step 4 to suit your particular 
    needs. My own `mystyles.js` file looks like this (below). Feel free to copy
@@ -168,8 +168,8 @@ similar to the front-end of your site.**
 
 The default editor CSS files can be found here:
 
-- **Regular Mode:** `/site/modules/InputfieldCKEditor/contents.css`
-- **Inline Mode:** `/site/modules/InputfieldCKEditor/contents-inline.css`
+- **Regular Mode:** /site/modules/InputfieldCKEditor/contents.css
+- **Inline Mode:** /site/modules/InputfieldCKEditor/contents-inline.css
 
 *There is also a Sass (SCSS) file called `contents-inline.scss` which you
 may prefer to use as your starting point if using Sass. Just remember to
@@ -222,8 +222,8 @@ this CSS selector...
 Note the `.Inputfield_body` part, as `body` is the name of the field 
 in ProcessWire. 
 
-If you will use the same contents-inline.css file for all of your
-inline fields, then just make sure to be sure it is specified with 
-the settings for each of your CKEditor inline textarea fields, otherwise
-you may end up reverting back to the default `contents-inline.css`.
+If you will use the same `contents-inline.css` file for all of your
+inline fields, then just make sure it is specified with the settings for 
+each of your CKEditor inline textarea fields, otherwise you may end up 
+reverting back to the default `contents-inline.css`.
   
