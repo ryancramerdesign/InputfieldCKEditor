@@ -113,8 +113,8 @@
 		if(imgWidth) queryString += "&width=" + imgWidth; 
 		if(imgHeight) queryString += "&height=" + imgHeight; 
 		if(imgClass && imgClass.length) queryString += "&class=" + imgClass; 
-		if(imgDescription && imgDescription.length) queryString += "&description=" + escape(imgDescription);
-		if(imgLink && imgLink.length) queryString += "&link=" + escape(imgLink);
+		if(imgDescription && imgDescription.length) queryString += "&description=" + encodeURI(imgDescription);
+		if(imgLink && imgLink.length) queryString += "&link=" + encodeURI(imgLink);
 		queryString += "&winwidth=" + windowWidth; 
 
 		// create iframe dialog box
