@@ -47,7 +47,8 @@
 					label: editor.lang.link.toolbar,
 					command: 'pwlink',
 					toolbar: 'links,10',
-					icon: this.path + 'images/pwlink.png'
+					icon: icon,
+					iconOffset: iconOffset
 				});
 				editor.ui.addButton( 'Unlink', {
 					label: editor.lang.link.unlink,
