@@ -30,8 +30,7 @@
 			editor.ui.addButton('PWImage', {
 				label: editor.lang.common.image,
 				command: pluginName, 
-				icon: icon,
-				iconOffset: iconOffset
+				icon: this.path + 'images/pwimage.png'
 			}); 
 	
 			// On double click we execute the command (= we open the pw image selection iFrame defined above)
