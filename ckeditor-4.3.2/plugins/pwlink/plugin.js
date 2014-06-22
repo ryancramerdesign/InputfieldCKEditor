@@ -34,14 +34,6 @@
 
 			editor.setKeystroke( CKEDITOR.CTRL + 76 /*L*/, 'pwlink' );
 			
-			//* retina icon support *
-			var icon = this.path + 'images/pwlink.png',
-				iconOffset;
-			if ( CKEDITOR.env.hidpi ) {
-				icon = this.path + '../icons_hidpi.png';
-				iconOffset = -1248;
-			}
-
 			if ( editor.ui.addButton ) {
 				editor.ui.addButton( 'PWLink', {
 					label: editor.lang.link.toolbar,

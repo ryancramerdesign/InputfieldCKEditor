@@ -19,14 +19,6 @@
 				exec: loadIframeImagePicker
 			}); 
 
-			//* retina icon support *
-			var icon = this.path + 'images/pwimage.png',
-				iconOffset;
-			if ( CKEDITOR.env.hidpi ) {
-				icon = this.path + '../icons_hidpi.png';
-				iconOffset = -936;
-			}
-
 			editor.ui.addButton('PWImage', {
 				label: editor.lang.common.image,
 				command: pluginName, 
