@@ -21,8 +21,8 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 118, 
-			'summary' => __('CKEditor textarea rich text editor (beta module)', __FILE__),
+			'version' => 119, 
+			'summary' => __('CKEditor textarea rich text editor.', __FILE__),
 			);
 	}
 
@@ -60,7 +60,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	 * Version number for CKEditor directory
 	 *
 	 */
-	const CKEDITOR_VERSION = '4.3.2';
+	const CKEDITOR_VERSION = '4.4.2';
 
 	/**
 	 * Instance of MarkupHTMLPurifier module
@@ -266,11 +266,14 @@ class InputfieldCKEditor extends InputfieldTextarea {
 			if($length != $newLength) $this->message("HTML Purifier: $this->name (before: $length bytes, after: $newLength bytes)", Notice::debug);
 		}
 
-		// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
-		// so we attempt to fix that issue here 
-		$value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+		if(strpos($this->formatTags, 'div') === false) {
+			// for some reason CKEditor insists on pasting DIVs sometimes when they should be paragraphs
+			// so we attempt to fix that issue here 
+			$value = str_replace(array('<div>', '</div>'), array('<p>', '</p>'), $value); 
+		}
 
 		// remove gratitutious whitespace added by CKEditor
+		// @todo does CKE still insert this garbage? if so, make this option configurable
 		$value = str_replace(array('<p><br /></p>', '<p>&nbsp;</p>'), '', $value); 
 
 		return $value; 
