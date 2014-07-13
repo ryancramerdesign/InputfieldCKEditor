@@ -64,7 +64,7 @@
 
 		// language support
 		var langID = '';
-		var $textarea = $('textarea#' + editor.name); // get textarea of this instance
+		var $textarea = $('.InputfieldCKEditorLoaded#' + editor.name); // get textarea of this instance
 		var $langWrapper = $textarea.closest('.LanguageSupport');
 		if($langWrapper.length) langID = "&lang=" + $langWrapper.data("language");
 
