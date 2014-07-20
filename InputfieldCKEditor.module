@@ -21,7 +21,7 @@ class InputfieldCKEditor extends InputfieldTextarea {
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'CKEditor',
-			'version' => 119, 
+			'version' => 120, 
 			'summary' => __('CKEditor textarea rich text editor.', __FILE__),
 			);
 	}

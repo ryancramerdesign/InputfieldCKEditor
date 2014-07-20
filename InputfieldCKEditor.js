@@ -22,9 +22,10 @@ $(document).ready(function() {
 	var $inlines = $(".InputfieldCKEditorInline"); 
 	var pageID = $("#Inputfield_id").val();
 
+	CKEDITOR.disableAutoInline = true; 
+
 	if($inlines.size() > 0) {
 
-		CKEDITOR.disableAutoInline = true; 
 
 		$inlines.mouseover(function() {
 			// we initialize the inline editor only when moused over
